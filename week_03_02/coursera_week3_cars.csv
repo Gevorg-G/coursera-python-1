@@ -1,0 +1,24 @@
+car_type;brand;passenger_seats_count;photo_file_name;body_whl;carrying;extra
+car;1 - Nissan xTtrail;4;f1.jpeg;;2.5;
+car;2 - Nissan xTtrail;;f1.jpeg;;2.5s;
+car;3 - Nissan xTtrail;;;;2.5;
+truck;4 - Man;;f2.png;8.3x3.3x2.5;20;
+truck;5 - Man;;f2.png;8.3sx3.3x2.5;20;
+truck;6 - Man;;f2.png;8x3x2.5;20;
+truck;7 - Man;;f2.png;;20;
+truck;8 - Man;;f2.png;8x3;20;
+car;9 - Mazda 6;4;f3.jpeg;;2.5;
+;;;
+spec_machine;10 - Hitachi - 1;;f4;;1.2;Легкая техника для уборки снега
+car;11 - Mazda 6;4;f3();;2.5;
+car;12 - Mazda 6;4;f3().jpeg;;2.5;
+car;13 - Mazda 6;4;f3.();;2.5;
+car;14 - Mazda 6;4; . ;;2.5;
+car;15 - Mazda 6;4;. ;;2.5;
+car;16 - Mazda 6;4;12.;;2.5;
+car;17 - Mazda 6;4; ;;2.5;
+car;18 - Mazda 6;4;'';;2.5;
+car;19 - Mazda 6;4;"";;2.5;
+car;20 - Mazda 6;4;f2;;2.5;
+truck;21 - Man;;f2.png;asdf;20;
+car;22 - Mazda 6;4;.jpeg;;2.5;

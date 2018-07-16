@@ -1,0 +1,4 @@
+car_type;brand;passenger_seats_count;photo_file_name;body_whl;carrying;extra
+car;1 - Nissan xTtrail;4;f1.jpeg;;2.5;
+car;2 - Nissan xTtrail;4;f1.jpeg;;2.5;
+car;3 - Nissan xTtrail;4;;;2.5;
