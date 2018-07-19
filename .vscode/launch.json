@@ -9,10 +9,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": [
-                "--key", "10",
-                "--val", "11", "12", "13"
-            ]
+            "stopOnEntry": true
         },
         {
             "name": "Python: Current File",
@@ -37,17 +34,6 @@
             "program": "${file}",
             "console": "integratedTerminal"
         },
-        // {
-        //     "name": "Python: Terminal (integrated) / Argparse",
-        //     "type": "python",
-        //     "request": "launch",
-        //     "program": "${file}",
-        //     "console": "integratedTerminal"
-        //     "args": [
-        //         "--key", "10",
-        //         "--val", "20,", "30,", "40"
-        //     ]
-        // },
         {
             "name": "Python: Terminal (external)",
             "type": "python",

@@ -10,6 +10,8 @@ import random
 class File():
     def __init__(self, path):
         self.path = path
+        self.current_position = 0
+
         if not os.path.exists(self.path):
             os.makedirs(os.path.dirname(self.path), exist_ok=True)
             open(self.path, 'a').close()
@@ -32,8 +34,15 @@ class File():
 
     def __iter__(self):
         with open(self.path) as f:
-            text = f.readlines()
-        for string in text:
+            f.seek(self.current_position)
+
+            string = f.readline()
+            if not string:
+                self.current_position = 0
+                raise StopAsyncIteration("EOF")
+
+            self.current_position = f.tell()
+
             yield string
 
     # Конкретно в этом примере нам __next__(self) не понадобился
@@ -50,3 +59,9 @@ class File():
     def read(self):
         with open(self.path) as f:
             print(f.read())
+
+
+f1 = File("tmp/1.txt")
+
+for i in f1:
+    print(i)
