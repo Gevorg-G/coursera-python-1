@@ -34,8 +34,8 @@ class File():
 
     def __iter__(self):
         with open(self.path) as f:
-            for _ in f:
-                yield f.readline()
+            for string in f:
+                yield string
 
     def __str__(self):
         return self.path

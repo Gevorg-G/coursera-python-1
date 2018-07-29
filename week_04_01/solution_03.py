@@ -34,8 +34,15 @@ class File():
 
     def __iter__(self):
         with open(self.path) as f:
-            for _ in f:
-                yield f.readline()
+            for i in f:
+                print(i)
+                f.seek(self.current_position)
+                string = f.readline()
+                if not string:
+                    self.current_position = 0
+                    raise StopAsyncIteration("EOF")
+                self.current_position = f.tell()
+                yield string
 
     def __str__(self):
         return self.path
@@ -49,7 +56,7 @@ class File():
             print(f.read())
 
 
-# f1 = File("tmp/1.txt")
+f1 = File("tmp/1.txt")
 
-# for i in f1:
-#     print(i)
+for i in f1:
+    print(i)
