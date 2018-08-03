@@ -1,47 +1,89 @@
 # https://www.coursera.org/learn/diving-in-python/programming/aG3x3/kliient-dlia-otpravki-mietrik
-# https://d3c33hcgiwev3.cloudfront.net/_0c1c1bede648463ed60e3bd2e67db919_W5.pdf?Expires=1532563200&Signature=WwfFJHOpUta8eVr95LyoaVrVY56X09a3V2dihC5usqXxcrU7ptWcgVmoO9OnxWgSTTDyqKLBxdrnPfIKQAi3eqwJoMpp8Q-jU4hxhbS7Q2eu4nJlNNuqAW1r7Rn1Cu4be9l5-4mCGztGj0-203JoaXwCEOXVYxAUHnfYWdGo4pI_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A
 
-import asyncio
-# import time
+
+import socket
+import time
+
+
+class ClientError(Exception):
+    """Ошибка"""
+    print("Ошибка")
 
 
 class Client:
     """Клиент для записи и чтения данных"""
 
-    def __init__(self, addr, port, timeout):
+    def __init__(self, addr, port, timeout=None):
         self.addr = addr
         self.port = port
         self.timeout = timeout
 
-    async def put(self, key, value, timestamp):
+    def put(self, key, value, timestamp=None):
         """Метод для записи данных"""
+        with socket.create_connection((self.addr, self.port), self.timeout) as sock:
+            # Преобразовываем значения в строки
+            if timestamp is None:
+                timestamp = int(time.time())
+            timestamp = str(timestamp) + "\n"
+            value = str(value)
 
-        reader, writer = await asyncio.open_connection(self.addr, self.port)
+            # Формируем строку и отправляем её
+            send_data = ' '.join(["put", key, value, timestamp])
+            try:
+                sock.sendall(send_data.encode("utf8"))
+            except:
+                raise ClientError
 
-        print(f"key: {key}, value: {value}, timestamp: {timestamp}")
-        try:
-            writer.write(key.encode())
-            writer.write(value.encode())
-            writer.write(timestamp.encode())
-        except:
-            raise ClientError("не могу отправить данные")
-        finally:
-            writer.close()
+            # Получаем ответ от сервера
+            recieved_data = b""
+            while not recieved_data.endswith(b"\n\n"):
+                try:
+                    recieved_data += sock.recv(1024)
+                except socket.timeout:
+                    raise ClientError
 
-    def get(self):
+            if recieved_data.decode("utf8") == "ok\n\n":
+                print("Everything is ok")
+            if recieved_data.decode("utf8") == "error\nwrong command\n\n":
+                print("Something broken")
+
+    def get(self, key):
         """Метод для чтения данных"""
-        pass
+        with socket.create_connection((self.addr, self.port), self.timeout) as sock:
+            key += "\n"
+            send_data = ' '.join(["get", key])
+            sock.sendall(send_data.encode("utf8"))
 
+            recieved_data = b""
 
-class ClientError(Exception):
-    """Ошибка"""
-    pass
-    # def __init__(self, text=""):
-    #     self.text = text
+            while not recieved_data.endswith(b"\n\n"):
+                try:
+                    recieved_data += sock.recv(1024)
+                    print(recieved_data.decode("utf8"))
+                except:
+                    raise ClientError
 
+            if recieved_data.decode("utf8") == "ok\n\n":
+                return {}
+            elif recieved_data.decode("utf8") == "error\nwrong command\n\n":
+                raise ClientError
+            else:
+                return self.parser(recieved_data)
 
-client = Client("127.0.0.1", 10001, 2)
+    def parser(self, recieved_data):
+        data = {}
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(client.put("key", "value", "timestamp"))
-loop.close()
+        unparsed_data = recieved_data.decode("utf8").split("\n")
+        unparsed_data = unparsed_data[1:-2]
+
+        for i in unparsed_data:
+            parsed_data = i.split(" ")
+            key, value, timestamp = parsed_data[0], float(
+                parsed_data[1]), int(parsed_data[2])
+
+            if key in data:
+                data[key] += [(timestamp, value)]
+            else:
+                data[key] = [(timestamp, value)]
+
+        return data
